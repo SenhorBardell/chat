@@ -1,21 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react'
+import 'react-native-gesture-handler'
+import Pubnub from 'pubnub'
+import Constants from 'expo-constants'
+import { PubNubProvider } from "pubnub-react"
+import Navigator from './src/Navigator'
+import { useStore, uuid } from './src/store'
+import { StatusBar, AppState } from 'react-native'
+import listener from './src/model'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+const {subscribeKey, publishKey} = Constants.manifest.extra
+
+const client = new Pubnub({
+  subscribeKey,
+  publishKey,
+  uuid,
+  restore: true
+})
+
+export default () => {
+  const { state, dispatch } = useStore()
+
+  useEffect(() => {
+    const stateListener = AppState.addEventListener('change', (nextState) => {
+      if (nextState.match(/inactive|background/)) {
+        stateListener.remove()
+        client.unsubscribeAll()
+      }
+    })
+    client.addListener(listener(state, dispatch))
+    client.subscribe({
+      channelGroups: [uuid],
+      withPresence: true
+    })
+  }, [])
+
+  return <>
+    <StatusBar style="auto" translucent={true} />
+    <PubNubProvider client={client}>
+      <Navigator />
+    </PubNubProvider>
+  </>
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
