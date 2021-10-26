@@ -1,13 +1,23 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {user, useStore} from './store'
-import { GiftedChat, Actions } from "react-native-gifted-chat"
+import { GiftedChat, Actions } from 'react-native-gifted-chat'
 import { usePubNub } from 'pubnub-react'
 
 export default ({route}) => {
   const client = usePubNub()
-  const {state} = useStore()
+  const {state, dispatch} = useStore()
   const {item} = route.params
   const messages = state.messages[item.id] || []
+
+  useEffect(() => {
+    client.objects.setChannelMetadata({
+      channel: item.id,
+      data: {
+        name: item.name,
+        description: item.description
+      }
+    })
+  }, [])
   
   const pickImage = () => {
 

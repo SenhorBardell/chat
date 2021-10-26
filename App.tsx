@@ -21,9 +21,8 @@ export default () => {
   const { state, dispatch } = useStore()
 
   useEffect(() => {
-    const stateListener = AppState.addEventListener('change', (nextState) => {
+    AppState.addEventListener('change', (nextState) => {
       if (nextState.match(/inactive|background/)) {
-        stateListener.remove()
         client.unsubscribeAll()
       }
     })
@@ -35,7 +34,7 @@ export default () => {
   }, [])
 
   return <>
-    <StatusBar style="auto" translucent={true} />
+    <StatusBar translucent={true} />
     <PubNubProvider client={client}>
       <Navigator />
     </PubNubProvider>

@@ -1,10 +1,10 @@
 export default (state, dispatch) => ({
   message: payload => {
     // channel, subscription, timetoken, message, publisher
-    console.log('new message arrived', payload)
-    const messages = state.messages[payload.channel] || []
-    state.messages[payload.channel] = [...messages, payload.message]
-    dispatch(state)
+    console.log('new message arrived', payload, state)
+    const channelMessages = state.messages[payload.channel] || []
+    state.messages[payload.channel] = [...channelMessages, payload.message]
+    dispatch({messages: state.messages})
   },
   presence: event => {
     // action, channel, occupancy, state

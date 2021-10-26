@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "target": "ESNext",
+    "jsx": "preserve"
+  },
+  "extends": "expo/tsconfig.base"
+}
