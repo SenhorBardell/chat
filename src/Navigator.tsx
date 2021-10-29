@@ -5,14 +5,17 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import Chat from './Chat'
 import Chats from './Chats'
 import CreateGroup from './CreateGroup'
+import CreateGroupDetails from './CreateGroupDetails'
 import Contacts from './Contacts'
 import ChatDetails from './ChatDetails'
 import {Channel} from './store'
 
-type StackParamList = {
+export type StackParamList = {
   Chats: undefined
-  Chat: { item: Channel }
+  Chat: { item: Channel & {id: string} }
   ChatDetails: { item: Channel }
+  CreateGroup: undefined
+  CreateGroupDetails: { members: string[] }
   Contacts: undefined
 }
 
@@ -45,6 +48,8 @@ export default () => {
           title: `${route.params.item.name} Details`
         })}/>
       <Stack.Screen name="Contacts" component={Contacts} options={{ title: 'Create'  }} />
+      <Stack.Screen name="CreateGroup" component={CreateGroup} options={{ title: 'New Group'}} />
+      <Stack.Screen name="CreateGroupDetails" component={CreateGroupDetails} options={{ title: 'New Group'}} />
     </Stack.Navigator>
   </NavigationContainer>
 }

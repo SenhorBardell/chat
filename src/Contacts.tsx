@@ -4,6 +4,8 @@ import SearchBar from './SearchBar'
 import styles from './styles'
 import {User, useStore} from './store'
 import {usePubNub} from "pubnub-react";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {StackParamList} from "./Navigator";
 
 const ListItem = ({item, onPress}) => {
     return <TouchableOpacity onPress={onPress} style={styles.listView}>
@@ -16,7 +18,7 @@ const ListItem = ({item, onPress}) => {
     </TouchableOpacity>
 }
 
-export default ({ navigation }) => {
+export default ({ navigation }: { navigation: NativeStackNavigationProp<StackParamList, 'Contacts'>}) => {
     const pubnub = usePubNub()
     const { state, dispatch } = useStore()
     const [search, setSearch] = useState('')
@@ -44,9 +46,7 @@ export default ({ navigation }) => {
 
     return <View>
         <SearchBar value={search} onChange={setSearch} />
-        <Button title="New Group" onPress={() => {
-            console.log('attempt to create new group')
-        }} />
+        <Button title="New Group" onPress={() => navigation.navigate('CreateGroup')} />
         <Button title="New Contact" onPress={() => {
             console.log('attempt to create new contact')
         }} />

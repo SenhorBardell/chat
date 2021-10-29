@@ -3,10 +3,12 @@ import {Channel, useStore} from './store'
 import {Alert, FlatList, View} from 'react-native'
 import {usePubNub} from 'pubnub-react'
 import {ChatListItem} from './ChatListItem'
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {StackParamList} from "./Navigator";
 
 const Separator = () => <View style={{borderBottomWidth: 1, borderBottomColor: 'grey'}} />
 
-export default ({ navigation }) => {
+export default ({ navigation }: {navigation: NativeStackNavigationProp<StackParamList, 'Chats'>}) => {
   const pubnub = usePubNub()
   const { state, dispatch } = useStore()
   const [loading, setLoading] = useState(true)

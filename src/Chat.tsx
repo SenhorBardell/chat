@@ -2,28 +2,19 @@ import React, {useEffect} from 'react'
 import {user, useStore} from './store'
 import { GiftedChat, Actions } from 'react-native-gifted-chat'
 import { usePubNub } from 'pubnub-react'
+import {RouteProp} from "@react-navigation/native";
+import {StackParamList} from "./Navigator";
 
-export default ({route}) => {
+export default ({route}: {route: RouteProp<StackParamList, 'Chat'>}) => {
   const client = usePubNub()
   const {state, dispatch} = useStore()
   const {item} = route.params
   const messages = state.messages[item.id] || []
 
-  useEffect(() => {
-    client.objects.setChannelMetadata({
-      channel: item.id,
-      data: {
-        name: item.name,
-        description: item.description
-      }
-    })
-  }, [])
-  
   const pickImage = () => {
 
   }
   const onSend = async (messages) => {
-    console.log('input', messages)
     const res = await Promise.all(messages.map(message => client.publish({channel: item.id, message})))
     console.log('sending message', res)
   }

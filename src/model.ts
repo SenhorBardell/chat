@@ -1,3 +1,4 @@
+
 export default (state, dispatch) => ({
   message: payload => {
     // channel, subscription, timetoken, message, publisher
