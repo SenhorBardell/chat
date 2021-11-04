@@ -15,9 +15,18 @@ export type User = {
   avatar: string
 }
 
+export enum ChannelType {
+  Direct,
+  Group
+}
+
 export type Channel = {
+  id: string
   name: string
   description: string
+  custom: {
+    type: ChannelType
+  }
 }
 
 export type Message = IMessage

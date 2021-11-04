@@ -1,54 +1,23 @@
-import React, {useRef, useState} from 'react'
-import {Text, TouchableOpacity, View, Animated, PanResponder, Dimensions} from 'react-native'
-import {useStore, Channel} from './store'
-import styles from './styles'
+import React from 'react'
+import {Text, TouchableOpacity, View } from 'react-native'
+import {Channel} from './store'
+import {ListViewStyle} from './styles'
+import Circle from "./components/Circle";
 
-const width = Dimensions.get('window').width
+export const ChatListItem = (
+  { item, index, length, onPress }:
+    { item: Channel, index: number, length: number, onPress: () => void }) => {
+  const letter = (item.name ? item.name[0] : '').toUpperCase()
 
-export const ChatListItem = ({ item, onPress, onDelete }: { item: Channel, onPress: () => void, onDelete: () => void }) => {
-    const [scrollEnabled, enableScroll] = useState(true)
-    const gestureDelay = -35
-    const position = useRef(new Animated.ValueXY()).current
-    const panResponder = useRef(PanResponder.create({
-        onStartShouldSetPanResponder: () => false,
-        onMoveShouldSetPanResponder: () => true,
-        onPanResponderTerminationRequest: () => false,
-        onPanResponderMove: (event, gestureState) => {
-            if (gestureState.dx > 35) {
-                enableScroll(false)
-                let newX = gestureState.dx  + gestureDelay
-                position.setValue({x: newX, y: 0})
-            }
-        },
-        onPanResponderRelease: (event, gestureState) => {
-            if (gestureState.dx < 150) {
-                Animated
-                  .timing(position, { toValue: { x: 0, y:0 }, duration: 150, useNativeDriver: true })
-                  .start(() => {
-                      enableScroll(true)
-                  })
-            } else {
-                Animated
-                  .timing(position, {toValue: {x: width, y: 0}, duration: 300, useNativeDriver: true})
-                  .start(() => {
-                      enableScroll(true)
-                      onDelete()
-                  })
-            }
-        }
-    })).current
-    return <View>
-        <Animated.View style={[position.getLayout()]} {...panResponder.panHandlers}><TouchableOpacity
-          style={styles.listView}
-          onPress={onPress}
-          >
-            <View style={{flexDirection: 'row'}}>
-                <View style={styles.circle}/>
-                <View style={{flexDirection: 'column'}}>
-                    <Text>{item.name}</Text>
-                    <Text>{item.description}</Text>
-                </View>
-            </View>
-        </TouchableOpacity></Animated.View>
-    </View>
+  return <TouchableOpacity onPress={onPress}>
+      <View style={ListViewStyle.container}>
+        <View style={{flexDirection: 'row'}}>
+          <Circle letter={letter} />
+          <View style={[{flexDirection: 'column'}, index !== length-1 ? ListViewStyle.separator : {}]}>
+            <Text style={ListViewStyle.title}>{item.name}</Text>
+            <Text style={ListViewStyle.subtitle} numberOfLines={2}>{item.description}</Text>
+          </View>
+        </View>
+      </View>
+  </TouchableOpacity>
 }

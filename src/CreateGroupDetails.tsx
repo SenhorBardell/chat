@@ -2,7 +2,7 @@ import React, {useLayoutEffect, useRef, useState} from 'react'
 import {View, Text, TextInput, Button} from 'react-native'
 import {StackParamList} from './Navigator'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
-import {useStore} from './store'
+import {ChannelType, useStore} from './store'
 import {usePubNub} from "pubnub-react";
 import {RouteProp} from "@react-navigation/native";
 
@@ -27,7 +27,7 @@ export default ({navigation, route}: {
     const channel = `${state.user._id}-${name}`
     const res1 = await pubnub.objects.setChannelMetadata({
       channel,
-      data: {name, description}
+      data: {name, description, custom: {type: ChannelType.Group}}
     })
     console.log('setting new channel metadata', res1)
     const res2 = await pubnub.objects.setChannelMembers({
@@ -40,7 +40,10 @@ export default ({navigation, route}: {
       channelGroup: state.user._id
     })
     console.log('adding channel to channel groups', res3)
-    dispatch({channels: {...state.channels, [channel]: {name, description}}})
+    dispatch({channels: {
+        ...state.channels,
+        [channel]: {id: channel, name, description, custom: {type: ChannelType.Group}}}
+    })
     setLoading(false)
     navigation.replace('Chats')
   }

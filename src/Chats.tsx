@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react'
-import {Channel, useStore} from './store'
-import {Alert, FlatList, View} from 'react-native'
+import {ChannelType, useStore} from './store'
+import {Alert, FlatList } from 'react-native'
 import {usePubNub} from 'pubnub-react'
 import {ChatListItem} from './ChatListItem'
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {StackParamList} from "./Navigator";
-
-const Separator = () => <View style={{borderBottomWidth: 1, borderBottomColor: 'grey'}} />
+import {NativeStackNavigationProp} from '@react-navigation/native-stack'
+import {StackParamList} from './Navigator'
+import {ChatStyle } from './styles'
 
 export default ({ navigation }: {navigation: NativeStackNavigationProp<StackParamList, 'Chats'>}) => {
   const pubnub = usePubNub()
@@ -17,15 +16,15 @@ export default ({ navigation }: {navigation: NativeStackNavigationProp<StackPara
     setLoading(true)
     const res1 = await pubnub.channelGroups.listChannels({ channelGroup: state.user._id })
     const channels = res1.channels.reduce((acc, channel) => {
-      return { [channel]: {name: '', description: ''}, ...acc }
+      return { [channel]: {name: '', description: '', custom: {type: ChannelType.Group}}, ...acc }
     }, {})
     dispatch({ channels })
     console.log('channel group channels', res1)
     const res2 = await pubnub.objects.getAllChannelMetadata()
     console.log('get all channel metadata', res2)
 
-    res2.data.forEach(({id, name, description}) => {
-        channels[id] = { name, description }
+    res2.data.forEach(({id, name, description, custom}) => {
+      channels[id] = { name, description, custom: {...channels[id]?.custom, ...custom} }
     })
 
     console.log('dispatching initial channels', channels)
@@ -40,25 +39,6 @@ export default ({ navigation }: {navigation: NativeStackNavigationProp<StackPara
     setLoading(false)
   }
 
-  const deleteChannel = async (item: Channel & {id: string}) => {
-    if (item.id === state.user._id) {
-      return console.log('cannot delete notes channel')
-    }
-    const channel = item.id
-    const members = await pubnub.objects.getChannelMembers({ channel })
-    console.log('getting members from channel', members.data)
-    const removeChannelMembersRes = await pubnub.objects.removeChannelMembers({ channel, uuids: members.data.map(member => member.uuid.id) })
-    console.log('removing members from channel', removeChannelMembersRes)
-    const removeChannelMetadataRes = await pubnub.objects.removeChannelMetadata({ channel })
-    console.log('removing channel metadata', removeChannelMembersRes)
-    const deleteMessagesRes = await pubnub.deleteMessages({ channel })
-    console.log('removing channel messages', deleteMessagesRes)
-    const removeChannelRes = await pubnub.channelGroups.removeChannels({ channels: [channel], channelGroup: state.user._id })
-    console.log('remove channel from channel group', removeChannelRes)
-    const channels = {...state.channels}
-    delete channels[channel]
-    dispatch({ channels })
-  }
 
   useEffect(() => {
     if (!dispatch) return
@@ -71,18 +51,21 @@ export default ({ navigation }: {navigation: NativeStackNavigationProp<StackPara
 
   }, [dispatch])
 
-  const channels = Object.entries(state.channels).map(([id, { name, description }]) => ({id, name, description}))
+  const channels = Object.entries(state.channels).map(([id, rest]) => ({id, ...rest}))
 
   return <FlatList
       refreshing={loading}
       onRefresh={fetchChannels}
       data={channels}
-      ItemSeparatorComponent={Separator}
-      renderItem={({ item }) => <ChatListItem
-        item={item}
-        onPress={() => navigation.navigate('Chat', { item })}
-        onDelete={() => deleteChannel(item)}
-      />}
+      contentContainerStyle={ChatStyle.container}
+      renderItem={({ item, index}) =>
+        <ChatListItem
+          key={item.id}
+          index={index}
+          length={channels.length}
+          item={item}
+          onPress={() => navigation.navigate('Chat', {item})}
+        />}
       keyExtractor={(item) => item.id}
   />
 }

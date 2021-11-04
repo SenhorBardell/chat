@@ -1,7 +1,7 @@
 import React from 'react'
 import {View, Text, Button, Platform} from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Chat from './Chat'
 import Chats from './Chats'
 import CreateGroup from './CreateGroup'
@@ -9,6 +9,8 @@ import CreateGroupDetails from './CreateGroupDetails'
 import Contacts from './Contacts'
 import ChatDetails from './ChatDetails'
 import {Channel} from './store'
+import {NavigationStyle} from './styles'
+import {CreateButton} from "./components/IconButton";
 
 export type StackParamList = {
   Chats: undefined
@@ -24,10 +26,12 @@ const Stack = createNativeStackNavigator<StackParamList>()
 export default () => {
   return <NavigationContainer>
     <Stack.Navigator>
-      <Stack.Screen name="Chats" component={Chats} options={({ navigation }) => ({ 
+      <Stack.Screen name="Chats" component={Chats} options={({ navigation }) => ({
+        headerTitleStyle: NavigationStyle.title,
+        contentStyle: {backgroundColor: 'white'},
         headerRight: () =>
-          <View style={{paddingRight: Platform.OS === 'web' ? 16 : 0}}>
-            <Button onPress={() => navigation.navigate('Contacts')} title="Create" />
+          <View style={NavigationStyle.headerRight}>
+            <CreateButton onPress={() => navigation.navigate('Contacts')} />
           </View> })} />
       <Stack.Screen
         name="Chat"
@@ -35,7 +39,7 @@ export default () => {
         options={({navigation, route}) => ({
           title: route.params.item.name,
           headerRight: () =>
-            <View style={{paddingRight: Platform.OS === 'web' ? 16 : 0}}>
+            <View style={NavigationStyle.headerRight}>
               <Button
                 onPress={() => navigation.navigate('ChatDetails', { item: route.params.item })}
                 title="Details" />

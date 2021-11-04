@@ -26,7 +26,8 @@
     "react-native-screen": "^1.0.1",
     "react-native-screens": "^3.8.0",
     "react-native-web": "~0.13.12",
-    "zustand": "^3.5.13"
+    "zustand": "^3.5.13",
+    "expo-linear-gradient": "~9.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
