@@ -1,19 +1,32 @@
-import React, {useEffect, useState} from 'react'
+import React, {useLayoutEffect, useState} from 'react'
 import {View, Text, FlatList, TouchableOpacity, Button} from 'react-native'
 import {User, useStore} from './store'
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {StackParamList} from "./Navigator";
-import {usePubNub} from "pubnub-react";
+import {ListViewStyle, NavigationStyle} from "./styles";
+import Circle from "./components/Circle";
+import RadioToggle from "./components/RadioToggle";
 
-const ListViewItem = ({item, selectedItems, onPress}: {item: User, selectedItems: string[], onPress: () => void}) =>
-  <TouchableOpacity onPress={onPress}>
-    <Text>{new Set(selectedItems).has(item._id) ? 'Selected' : 'Not selected'}</Text>
-  <Text>{item.name}</Text>
-</TouchableOpacity>
+const ListViewItem = ({item, selectedItems, onPress}: {
+  item: User,
+  selectedItems: string[],
+  onPress: () => void
+}) => {
+  const letter = (item.name ? item.name[0] : '').toUpperCase()
+  return <TouchableOpacity onPress={onPress} style={ListViewStyle.container}>
+    <View style={{flexDirection: 'row'}}>
+      <RadioToggle checked={new Set(selectedItems).has(item._id)} />
+      <Circle letter={letter} />
+      <View style={{flexDirection: 'column'}}>
+        <Text>{item.name}</Text>
+        <Text>last seen</Text>
+      </View>
+    </View>
+  </TouchableOpacity>
+}
 
 export default ({navigation}: {navigation: NativeStackNavigationProp<StackParamList, 'CreateGroup'>}) => {
   const {state, dispatch} = useStore()
-  const pubnub = usePubNub()
   const [selectedContacts, setSelectedContacts] = useState<string[]>([])
 
   const toggleContact = (item: User) => {
@@ -33,19 +46,19 @@ export default ({navigation}: {navigation: NativeStackNavigationProp<StackParamL
     'Who would you like to add?' :
     selectedContacts.map(_id => state.contacts.find(c => c._id === _id)).map(c => c.name).join(', ')
 
-  useEffect(() => {
-    if (selectedContacts.length) {
-      navigation.setOptions({
-        headerRight: () =>
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () =>
+        <View style={NavigationStyle.headerRight}>
           <Button onPress={() => navigation.navigate('CreateGroupDetails', {members: selectedContacts})} title="Next" />
-      })
-    } else {
-      navigation.setOptions({ headerRight: null })
-    }
-  }, [selectedContacts.length])
+        </View>
+    })
+  }, [navigation])
 
   return <View>
-    <Text>{promptText}</Text>
+    <View style={{paddingVertical: 4, paddingHorizontal: 4}}>
+      <Text>{promptText}</Text>
+    </View>
     <FlatList
       extraData={selectedContacts}
       data={state.contacts}

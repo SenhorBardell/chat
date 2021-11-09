@@ -1,18 +1,22 @@
 import React, {useState} from 'react'
 import {View, Text, FlatList, TouchableOpacity, Button} from 'react-native'
 import SearchBar from './SearchBar'
-import styles from './styles'
-import {User, useStore} from './store'
-import {usePubNub} from "pubnub-react";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {StackParamList} from "./Navigator";
+import styles, {ListViewStyle} from './styles'
+import {ChannelType, User, useStore} from './store'
+import {usePubNub} from 'pubnub-react'
+import {NativeStackNavigationProp} from '@react-navigation/native-stack'
+import {StackParamList} from './Navigator'
+import Circle from './components/Circle'
+import {InlineButton} from './components/Button'
 
-const ListItem = ({item, onPress}) => {
-    return <TouchableOpacity onPress={onPress} style={styles.listView}>
+const ListViewItem = ({item, index, length, onPress}: {item: User, index: number, length: number, onPress: () => void}) => {
+    const letter = (item.name ? item.name[0] : '').toUpperCase()
+    return <TouchableOpacity onPress={onPress} style={ListViewStyle.container}>
         <View style={{flexDirection: 'row'}}>
-            <View style={styles.circle} />
-            <View style={{ flexDirection: 'column' }}>
-                <Text>{item.name}</Text>
+            <Circle letter={letter} />
+            <View style={[{flexDirection: 'column'}, index !== length-1 ? ListViewStyle.separator : {}]}>
+                <Text style={ListViewStyle.title}>{item.name}</Text>
+                <Text style={ListViewStyle.subtitle}>last seen</Text>
             </View>
         </View>
     </TouchableOpacity>
@@ -40,19 +44,32 @@ export default ({ navigation }: { navigation: NativeStackNavigationProp<StackPar
             channelGroup: state.user._id
         })
         console.log('adding channel to channel groups', res3)
-        dispatch({ channels: {...state.channels, [channel]: {name: item.name, description: `One to one chat with ${item.name} `} } })
+        dispatch({ channels: {...state.channels,
+                [channel]: {
+                    id: channel,
+                    name: item.name,
+                    description: `One to one chat with ${item.name}`,
+                    custom: { type: ChannelType.Direct } }
+            }})
         navigation.goBack()
     }
 
     return <View>
         <SearchBar value={search} onChange={setSearch} />
-        <Button title="New Group" onPress={() => navigation.navigate('CreateGroup')} />
-        <Button title="New Contact" onPress={() => {
+        <InlineButton title="New Group" onPress={() => navigation.navigate('CreateGroup')} />
+        <InlineButton title="New Contact" onPress={() => {
             console.log('attempt to create new contact')
         }} />
         <FlatList
             data={data}
-            renderItem={({ item }) => <ListItem item={item} onPress={() => createChat(item)} />}
+            renderItem={({ item, index }) =>
+              <ListViewItem
+                key={item._id}
+                index={index}
+                length={data.length}
+                item={item}
+                onPress={() => createChat(item)}
+              />}
             keyExtractor={({ _id }) => `${_id}`}
         />
     </View>
