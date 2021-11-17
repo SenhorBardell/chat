@@ -8,7 +8,7 @@ import CreateGroup from './CreateGroup'
 import CreateGroupDetails from './CreateGroupDetails'
 import Contacts from './Contacts'
 import ChatDetails from './ChatDetails'
-import {Channel} from './store'
+import {Channel, User} from './store'
 import {NavigationStyle} from './styles'
 import {CreateButton} from "./components/IconButton";
 
@@ -17,7 +17,7 @@ export type StackParamList = {
   Chat: { item: Channel & {id: string} }
   ChatDetails: { item: Channel }
   CreateGroup: undefined
-  CreateGroupDetails: { members: string[] }
+  CreateGroupDetails: { members: User[] }
   Contacts: undefined
 }
 

@@ -23,7 +23,6 @@ export enum ChannelType {
 export type Channel = {
   id: string
   name: string
-  description: string
   custom: {
     type: ChannelType
   }

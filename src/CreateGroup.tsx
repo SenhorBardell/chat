@@ -3,7 +3,7 @@ import {View, Text, FlatList, TouchableOpacity, Button} from 'react-native'
 import {User, useStore} from './store'
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {StackParamList} from "./Navigator";
-import {ListViewStyle, NavigationStyle} from "./styles";
+import styles, {ListViewStyle, NavigationStyle} from "./styles";
 import Circle from "./components/Circle";
 import RadioToggle from "./components/RadioToggle";
 
@@ -50,13 +50,18 @@ export default ({navigation}: {navigation: NativeStackNavigationProp<StackParamL
     navigation.setOptions({
       headerRight: () =>
         <View style={NavigationStyle.headerRight}>
-          <Button onPress={() => navigation.navigate('CreateGroupDetails', {members: selectedContacts})} title="Next" />
+          <Button
+            disabled={!selectedContacts.length}
+            onPress={() => navigation.navigate('CreateGroupDetails', {
+              members: selectedContacts.map(_id => state.contacts.find(c => c._id === _id))
+            })}
+            title="Next" />
         </View>
     })
-  }, [navigation])
+  }, [navigation, selectedContacts])
 
   return <View>
-    <View style={{paddingVertical: 4, paddingHorizontal: 4}}>
+    <View style={styles.textInput}>
       <Text>{promptText}</Text>
     </View>
     <FlatList
@@ -68,6 +73,7 @@ export default ({navigation}: {navigation: NativeStackNavigationProp<StackParamL
         onPress={() => toggleContact(item)}
         selectedItems={selectedContacts}
       />}
+      keyExtractor={item => item._id}
     />
   </View>
 }

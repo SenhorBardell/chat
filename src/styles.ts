@@ -1,6 +1,10 @@
 import {Platform, StyleSheet} from "react-native"
 
 export default StyleSheet.create({
+  textInput: {
+    paddingVertical: 4,
+    paddingHorizontal: 4
+  }
 })
 
 export const NavigationStyle = StyleSheet.create({
