@@ -40,11 +40,13 @@ export default (state, dispatch) => ({
 
 export const fetchChannels = async (pubnub: Pubnub, channelGroup) => {
   const res = await pubnub.channelGroups.listChannels({ channelGroup })
+  console.log('fetched channel list', res)
   const channels = res.channels.reduce((acc, channel) =>
     ({[channel]: {name: '', custom: {type: ChannelType.Group}}, ...acc}), {})
   try {
     const metadata = await pubnub.objects.getAllChannelMetadata({
       filter: res.channels.map(channel => `id == "${channel}"`).join('||')})
+    console.log('fetched metadata for channel list', metadata)
     metadata.data.forEach(({ id, name, custom }) => {
       channels[id] = { name, custom: {...channels[id]?.custom, ...custom} }
     })

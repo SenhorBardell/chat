@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingRight: 2,
     fontSize: 36,
-    fontFamily: 'Courier',
     color: 'white',
     textAlign: 'center'
   }

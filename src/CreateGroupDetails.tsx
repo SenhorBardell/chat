@@ -45,7 +45,7 @@ export default ({navigation, route}: {
         [channel]: {id: channel, name, custom: {type: ChannelType.Group}}}
     })
     setLoading(false)
-    navigation.replace('Chats')
+    navigation.reset({index: 0, routes: [{name: 'Chats'}, {name: 'Chat', params: {item: {id: channel, name, custom: {type: ChannelType.Group}}}}]})
   }
 
   useLayoutEffect(() => {
