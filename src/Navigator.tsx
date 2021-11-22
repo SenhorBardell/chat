@@ -8,17 +8,19 @@ import CreateGroup from './CreateGroup'
 import CreateGroupDetails from './CreateGroupDetails'
 import Contacts from './Contacts'
 import ChatDetails from './ChatDetails'
+import AddMember from './AddMember'
 import {Channel, User} from './store'
 import {NavigationStyle} from './styles'
 import {CreateButton} from "./components/IconButton";
 
 export type StackParamList = {
   Chats: undefined
-  Chat: { item: Channel & {id: string} }
+  Chat: { item: Channel }
   ChatDetails: { item: Channel }
   CreateGroup: undefined
   CreateGroupDetails: { members: User[] }
-  Contacts: undefined
+  Contacts: { title?: string }
+  AddMember: { item: Channel }
 }
 
 const Stack = createNativeStackNavigator<StackParamList>()
@@ -51,9 +53,10 @@ export default () => {
         options={({route}) => ({
           title: `${route.params.item.name} Details`
         })}/>
-      <Stack.Screen name="Contacts" component={Contacts} options={{ title: 'Create'  }} />
+      <Stack.Screen name="Contacts" component={Contacts} options={({route}) => ({ title: route.params?.title ?? 'Create'  })} />
       <Stack.Screen name="CreateGroup" component={CreateGroup} options={{ title: 'New Group'}} />
       <Stack.Screen name="CreateGroupDetails" component={CreateGroupDetails} options={{ title: 'New Group'}} />
+      <Stack.Screen name="AddMember" component={AddMember} options={{ title: 'Contacts' }} />
     </Stack.Navigator>
   </NavigationContainer>
 }

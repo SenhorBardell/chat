@@ -13,7 +13,9 @@
     "@react-navigation/native-stack": "^6.2.4",
     "dotenv": "^10.0.0",
     "expo": "~42.0.1",
+    "expo-linear-gradient": "~9.2.0",
     "expo-status-bar": "~1.0.4",
+    "loglevel": "^1.8.0",
     "pubnub": "^4.33.0",
     "pubnub-react": "^2.1.0",
     "react": "16.13.1",
@@ -26,13 +28,12 @@
     "react-native-screen": "^1.0.1",
     "react-native-screens": "^3.8.0",
     "react-native-web": "~0.13.12",
-    "zustand": "^3.5.13",
-    "expo-linear-gradient": "~9.2.0"
+    "zustand": "^3.5.13"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
-    "typescript": "~4.0.0",
-    "@types/react-native": "~0.63.2"
+    "@types/react-native": "~0.63.2",
+    "typescript": "~4.0.0"
   },
   "private": true
 }

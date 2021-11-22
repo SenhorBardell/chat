@@ -33,6 +33,7 @@ export type Message = IMessage
 export type State = {
   channels: {[id: string]: Channel},
   messages: {[id: string]: Message[]},
+  members: {[id: string]: User[]}
   contacts: User[],
   user: User
 }
@@ -46,11 +47,12 @@ export const useStore = create<Store>(setState => ({
   state: {
     channels: {},
     messages: {},
+    members: {},
     contacts: [
       { _id: '1', name: 'John', avatar: '' },
       { _id: '2', name: 'Jane', avatar: '' }
     ],
-    user
+    user,
   },
   dispatch: newState => 
     setState((oldState) => ({state: {...oldState.state, ...newState}}))

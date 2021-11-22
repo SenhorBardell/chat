@@ -1,26 +1,12 @@
 import React, {useState} from 'react'
-import {View, Text, FlatList, TouchableOpacity, Button} from 'react-native'
+import {View} from 'react-native'
 import SearchBar from './SearchBar'
-import styles, {ListViewStyle} from './styles'
 import {ChannelType, User, useStore} from './store'
 import {usePubNub} from 'pubnub-react'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 import {StackParamList} from './Navigator'
-import Circle from './components/Circle'
 import {InlineButton} from './components/Button'
-
-const ListViewItem = ({item, index, length, onPress}: {item: User, index: number, length: number, onPress: () => void}) => {
-    const letter = (item.name ? item.name[0] : '').toUpperCase()
-    return <TouchableOpacity onPress={onPress} style={ListViewStyle.container}>
-        <View style={{flexDirection: 'row'}}>
-            <Circle letter={letter} />
-            <View style={[{flexDirection: 'column'}, index !== length-1 ? ListViewStyle.separator : {}]}>
-                <Text style={ListViewStyle.title}>{item.name}</Text>
-                <Text style={ListViewStyle.subtitle}>last seen</Text>
-            </View>
-        </View>
-    </TouchableOpacity>
-}
+import ContactList from './ContactList'
 
 export default ({ navigation }: { navigation: NativeStackNavigationProp<StackParamList, 'Contacts'>}) => {
     const pubnub = usePubNub()
@@ -48,10 +34,9 @@ export default ({ navigation }: { navigation: NativeStackNavigationProp<StackPar
                 [channel]: {
                     id: channel,
                     name: item.name,
-                    description: `One to one chat with ${item.name}`,
                     custom: { type: ChannelType.Direct } }
             }})
-        navigation.goBack()
+        navigation.replace('Chat', { item: { id: channel, name: item.name, custom: {type: ChannelType.Direct}} })
     }
 
     return <View>
@@ -60,17 +45,6 @@ export default ({ navigation }: { navigation: NativeStackNavigationProp<StackPar
         <InlineButton title="New Contact" onPress={() => {
             console.log('attempt to create new contact')
         }} />
-        <FlatList
-            data={data}
-            renderItem={({ item, index }) =>
-              <ListViewItem
-                key={item._id}
-                index={index}
-                length={data.length}
-                item={item}
-                onPress={() => createChat(item)}
-              />}
-            keyExtractor={({ _id }) => `${_id}`}
-        />
+        <ContactList data={data} onPress={(item) => createChat(item)} />
     </View>
 }

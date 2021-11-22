@@ -1,28 +1,13 @@
 import React, {useLayoutEffect, useRef, useState} from 'react'
-import {View, Text, TextInput, Button, StyleSheet} from 'react-native'
+import {Button, TextInput, View} from 'react-native'
 import {StackParamList} from './Navigator'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
-import {ChannelType, User, useStore} from './store'
+import {ChannelType, useStore} from './store'
 import {usePubNub} from 'pubnub-react'
 import {RouteProp} from '@react-navigation/native'
 import styles, {ListViewStyle, NavigationStyle} from './styles'
-import Circle from "./components/Circle";
-
-const localStyles = StyleSheet.create({
-  section: {
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    marginVertical: 8,
-    marginHorizontal: 8,
-    backgroundColor: 'white',
-    borderRadius: 6
-  }
-})
-
-const AddedMember = ({member}:{member: User}) => <View style={ListViewStyle.container}>
-  <Text style={ListViewStyle.title}>{member.name}</Text>
-  <Text style={ListViewStyle.subtitle}>last seen recently</Text>
-</View>
+import Circle from './components/Circle'
+import {ChatMember} from './components/ListViewItem'
 
 export default ({navigation, route}: {
   navigation: NativeStackNavigationProp<StackParamList, 'CreateGroupDetails'>,
@@ -47,7 +32,7 @@ export default ({navigation, route}: {
     console.log('setting new channel metadata', res1)
     const res2 = await pubnub.objects.setChannelMembers({
       channel,
-      uuids: route.params.members.map(user => ({id: user._id}))
+      uuids: route.params.members.map(user => user._id)
     })
     console.log('setting channel members', res2)
     const res3 = await pubnub.channelGroups.addChannels({
@@ -72,7 +57,7 @@ export default ({navigation, route}: {
   }, [navigation, name ])
 
   return <View>
-    <View style={[{flexDirection: 'row'}, localStyles.section]}>
+    <View style={[{flexDirection: 'row'}, styles.section]}>
       <Circle letter="" />
       <TextInput
         style={{
@@ -83,9 +68,9 @@ export default ({navigation, route}: {
         placeholder="Group Name"
         ref={nameInput} />
     </View>
-    <View style={localStyles.section}>
+    <View style={styles.section}>
       {route.params.members.map((member, i, all) => <View key={member._id}>
-        <AddedMember member={member} />
+        <ChatMember member={member} />
         {i !== all.length - 1 && <View style={ListViewStyle.separator} />}
       </View>)}
     </View>

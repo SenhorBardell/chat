@@ -4,6 +4,14 @@ export default StyleSheet.create({
   textInput: {
     paddingVertical: 4,
     paddingHorizontal: 4
+  },
+  section: {
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    marginVertical: 8,
+    marginHorizontal: 8,
+    backgroundColor: 'white',
+    borderRadius: 6
   }
 })
 
