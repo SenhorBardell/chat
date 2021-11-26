@@ -9,18 +9,19 @@
 
 1. Create group [x]
 2. Add group picture [ ]
-3. Add member to group [ ]
-4. Show group members [ ]
-5. Remove member from group [ ]
+3. Add member to group [x]
+4. Show group members [x]
+5. Remove member from group [x]
 6. Edit group details [ ]
 7. Leave group [x]
 
 ## Common
 
 1. Chat history
-   1. Fetch history of chat
-   2. Unread messages
-2. Read intent and unread messages count [ ]
+   1. Fetch history of chat [ ]
+   2. Unread messages [ ]
+   3. Last message on the chat list item
+2. Read intent [ ]
 2. User presence / last presence
 3. File share [ ]
 4. Picture circle placeholder [ ]
