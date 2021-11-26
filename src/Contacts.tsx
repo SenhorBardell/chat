@@ -20,7 +20,7 @@ export default ({ navigation }: { navigation: NativeStackNavigationProp<StackPar
         const channel = `${state.user._id}-${item._id}`
         const res1 = await pubnub.objects.setChannelMetadata({
             channel,
-            data: { name: item.name, description: `One to one chat with ${item.name}` }
+            data: {name: item.name, custom: {type: ChannelType.Direct}}
         })
         console.log('setting new channel metadata', res1)
         const res2 = await pubnub.objects.setChannelMembers({ channel, uuids: [{id: state.user._id}, {id: `${item._id}`}] })

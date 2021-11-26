@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from 'react'
-import {View, ActivityIndicator} from 'react-native'
-import Button, {InlineButton} from './components/Button'
+import {ActivityIndicator, View} from 'react-native'
+import {InlineButton} from './components/Button'
 import {RouteProp} from '@react-navigation/native'
 import {StackParamList} from './Navigator'
 import {usePubNub} from "pubnub-react"
-import {ChannelType, Channel, User, useStore} from "./store"
+import {Channel, ChannelType, User, useStore} from "./store"
 import {NativeStackNavigationProp} from "@react-navigation/native-stack"
 import {ChatMember, ManagedChatMember} from "./components/ListViewItem";
 import styles, {ListViewStyle} from "./styles";
 import {fetchChannels} from "./model";
 
-export default ({ route, navigation }: {
+export default ({route, navigation}: {
   route: RouteProp<StackParamList, 'ChatDetails'>,
   navigation: NativeStackNavigationProp<StackParamList, 'ChatDetails'>}) => {
 
@@ -27,10 +27,33 @@ export default ({ route, navigation }: {
 const DirectChatDetails = ({ route, navigation }: {
   route: RouteProp<StackParamList, 'ChatDetails'>,
   navigation: NativeStackNavigationProp<StackParamList, 'ChatDetails'>}) => {
-  return <View style={{padding: 8}}>
-    <Button title="Block User" onPress={() => {
-      console.log('block user')
-    }} />
+  const pubnub = usePubNub()
+  const {state, dispatch} = useStore()
+  const [loading, setLoading] = useState(false)
+
+  const deleteChannel = async () => {
+    setLoading(true)
+    const [metadataRes, channelGroupRes] = await Promise.all([
+      pubnub.objects.removeChannelMetadata({channel: route.params.item.id}),
+      pubnub.channelGroups.removeChannels({
+        channelGroup: state.user._id,
+        channels: [route.params.item.id]
+      })
+    ])
+    console.log('removing channel metadata', metadataRes)
+    console.log('removing channel from channel group', channelGroupRes)
+    const channels = await fetchChannels(pubnub, state.user._id)
+    dispatch({channels})
+    setLoading(false)
+    navigation.pop(2)
+  }
+
+  if (loading) return <View><ActivityIndicator/></View>
+
+  return <View>
+    <View style={styles.section}>
+      <InlineButton title="Block User" onPress={deleteChannel}/>
+    </View>
   </View>
 
 }
@@ -84,7 +107,7 @@ const GroupChatDetails = ({ route, navigation }: {
 
   const leaveChannel = async () => {
     console.log('leaving channel')
-    const [membersRes, unsubscribeRes] = await Promise.all([
+    const [membersRes, unsubscribeRes, removeMetadataRes] = await Promise.all([
       pubnub.objects.removeChannelMembers({
         channel: item.id,
         uuids: [state.user._id]
@@ -92,12 +115,16 @@ const GroupChatDetails = ({ route, navigation }: {
       pubnub.channelGroups.removeChannels({
         channelGroup: state.user._id,
         channels: [item.id]
+      }),
+      pubnub.objects.removeChannelMetadata({
+        channel: item.id
       })
     ])
     console.log('remove channel members res', membersRes)
-    console.log('remove from group channel res',unsubscribeRes )
+    console.log('remove from group channel res', unsubscribeRes)
+    console.log('remove channel metadata res', removeMetadataRes)
     const channels = await fetchChannels(pubnub, state.user._id)
-    dispatch({ channels })
+    dispatch({channels})
     navigation.pop(2)
   }
 

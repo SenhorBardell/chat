@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react'
-import {ChannelType, useStore} from './store'
-import {ActivityIndicator, Alert, FlatList, Text} from 'react-native'
+import React, {useEffect, useLayoutEffect, useState} from 'react'
+import {useStore} from './store'
+import {ActivityIndicator, FlatList, Text} from 'react-native'
 import {usePubNub} from 'pubnub-react'
 import {ChatListItem} from './ChatListItem'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
@@ -8,9 +8,9 @@ import {StackParamList} from './Navigator'
 import {ChatStyle, NavigationStyle} from './styles'
 import {fetchChannels} from "./model";
 
-export default ({ navigation }: {navigation: NativeStackNavigationProp<StackParamList, 'Chats'>}) => {
+export default ({navigation}: { navigation: NativeStackNavigationProp<StackParamList, 'Chats'> }) => {
   const pubnub = usePubNub()
-  const { state, dispatch } = useStore()
+  const {state, dispatch} = useStore()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -18,6 +18,7 @@ export default ({ navigation }: {navigation: NativeStackNavigationProp<StackPara
 
     const bootstrap = async () => {
       setLoading(true)
+      console.log('current user', state.user._id)
       const channels = await fetchChannels(pubnub, state.user._id)
       dispatch({ channels })
       setLoading(false)
