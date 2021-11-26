@@ -31,7 +31,7 @@ export default (state, dispatch) => ({
     // switch (status.category) {
     //   case 'PNConnectedCategory':
     //     if (status.operation === 'PNSubscribeOperation') {
-    //       return dispatch({channels: status.subscribedChannels})  
+    //       return dispatch({channels: status.subscribedChannels})
     //     }
     // }
     dispatch({ status })
@@ -45,7 +45,9 @@ export const fetchChannels = async (pubnub: Pubnub, channelGroup) => {
     ({[channel]: {name: '', custom: {type: ChannelType.Group}}, ...acc}), {})
   try {
     const metadata = await pubnub.objects.getAllChannelMetadata({
-      filter: res.channels.map(channel => `id == "${channel}"`).join('||')})
+      filter: res.channels.map(channel => `id == "${channel}"`).join('||'),
+      include: {customFields: true}
+    })
     console.log('fetched metadata for channel list', metadata)
     metadata.data.forEach(({ id, name, custom }) => {
       channels[id] = { name, custom: {...channels[id]?.custom, ...custom} }
