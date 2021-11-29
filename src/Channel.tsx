@@ -1,11 +1,11 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import {user, useStore} from './store'
-import { GiftedChat, Actions } from 'react-native-gifted-chat'
-import { usePubNub } from 'pubnub-react'
+import {Actions, GiftedChat} from 'react-native-gifted-chat'
+import {usePubNub} from 'pubnub-react'
 import {RouteProp} from '@react-navigation/native';
 import {StackParamList} from './Navigator';
 
-export default ({route}: {route: RouteProp<StackParamList, 'Chat'>}) => {
+export default ({route}: { route: RouteProp<StackParamList, 'Chat'> }) => {
   const client = usePubNub()
   const {state, dispatch} = useStore()
   const {item} = route.params

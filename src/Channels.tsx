@@ -2,7 +2,7 @@ import React, {useEffect, useLayoutEffect, useState} from 'react'
 import {useStore} from './store'
 import {ActivityIndicator, FlatList, Text} from 'react-native'
 import {usePubNub} from 'pubnub-react'
-import {ChatListItem} from './ChatListItem'
+import {ChannelListItem} from './ChannelListItem'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 import {StackParamList} from './Navigator'
 import {ChatStyle, NavigationStyle} from './styles'
@@ -49,7 +49,7 @@ export default ({navigation}: { navigation: NativeStackNavigationProp<StackParam
       data={channels}
       contentContainerStyle={ChatStyle.container}
       renderItem={({ item, index}) =>
-        <ChatListItem
+        <ChannelListItem
           key={item.id}
           index={index}
           length={channels.length}
