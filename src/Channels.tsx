@@ -8,7 +8,7 @@ import {StackParamList} from './Navigator'
 import {ChatStyle, NavigationStyle} from './styles'
 import {fetchChannels} from "./model";
 
-export default ({navigation}: { navigation: NativeStackNavigationProp<StackParamList, 'Chats'> }) => {
+export default ({navigation}: { navigation: NativeStackNavigationProp<StackParamList, 'Channels'> }) => {
   const pubnub = usePubNub()
   const {state, dispatch} = useStore()
   const [loading, setLoading] = useState(true)
@@ -54,7 +54,7 @@ export default ({navigation}: { navigation: NativeStackNavigationProp<StackParam
           index={index}
           length={channels.length}
           item={item}
-          onPress={() => navigation.navigate('Chat', {item})}
+          onPress={() => navigation.navigate('Channel', {item})}
         />}
       keyExtractor={(item) => item.id}
   />

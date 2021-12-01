@@ -10,7 +10,7 @@ import Circle from './components/Circle'
 import {ChatMember} from './components/ListViewItem'
 
 export default ({navigation, route}: {
-  navigation: NativeStackNavigationProp<StackParamList, 'CreateGroupDetails'>,
+  navigation: NativeStackNavigationProp<StackParamList, 'CreateChannelDetails'>,
   route: RouteProp<StackParamList, 'CreateGroupDetails'>
 }) => {
   const pubnub = usePubNub()

@@ -6,7 +6,7 @@ import {StackParamList} from "./Navigator";
 import styles, {NavigationStyle} from "./styles";
 import {ListViewItem} from "./components/ListViewItem";
 
-export default ({navigation}: {navigation: NativeStackNavigationProp<StackParamList, 'CreateGroup'>}) => {
+export default ({navigation}: { navigation: NativeStackNavigationProp<StackParamList, 'CreateChannel'> }) => {
   const {state, dispatch} = useStore()
   const [selectedContacts, setSelectedContacts] = useState<string[]>([])
 

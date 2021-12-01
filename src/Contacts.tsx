@@ -30,21 +30,25 @@ export default ({ navigation }: { navigation: NativeStackNavigationProp<StackPar
             channelGroup: state.user._id
         })
         console.log('adding channel to channel groups', res3)
-        dispatch({ channels: {...state.channels,
+        dispatch({
+            channels: {
+                ...state.channels,
                 [channel]: {
                     id: channel,
                     name: item.name,
-                    custom: { type: ChannelType.Direct } }
-            }})
-        navigation.replace('Chat', { item: { id: channel, name: item.name, custom: {type: ChannelType.Direct}} })
+                    custom: {type: ChannelType.Direct}
+                }
+            }
+        })
+        navigation.replace('Channel', {item: {id: channel, name: item.name, custom: {type: ChannelType.Direct}}})
     }
 
     return <View>
-        <SearchBar value={search} onChange={setSearch} />
-        <InlineButton title="New Group" onPress={() => navigation.navigate('CreateGroup')} />
+        <SearchBar value={search} onChange={setSearch}/>
+        <InlineButton title="New Group" onPress={() => navigation.navigate('CreateChannel')}/>
         <InlineButton title="New Contact" onPress={() => {
             console.log('attempt to create new contact')
-        }} />
+        }}/>
         <ContactList data={data} onPress={(item) => createChat(item)} />
     </View>
 }

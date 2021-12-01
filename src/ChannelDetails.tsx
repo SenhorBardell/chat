@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useLayoutEffect, useState} from 'react'
 import {ActivityIndicator, View} from 'react-native'
 import {InlineButton} from './components/Button'
 import {RouteProp} from '@react-navigation/native'
@@ -11,22 +11,24 @@ import styles, {ListViewStyle} from "./styles";
 import {fetchChannels} from "./model";
 
 export default ({route, navigation}: {
-  route: RouteProp<StackParamList, 'ChatDetails'>,
-  navigation: NativeStackNavigationProp<StackParamList, 'ChatDetails'>}) => {
+  route: RouteProp<StackParamList, 'ChannelDetails'>,
+  navigation: NativeStackNavigationProp<StackParamList, 'ChannelDetails'>
+}) => {
 
   const item = route.params.item
 
   if (item.custom.type === ChannelType.Group) return <GroupChatDetails
     route={route}
-    navigation={navigation} />
+    navigation={navigation}/>
   if (item.custom.type === ChannelType.Direct) return <DirectChatDetails
     route={route}
-    navigation={navigation} />
+    navigation={navigation}/>
 }
 
-const DirectChatDetails = ({ route, navigation }: {
-  route: RouteProp<StackParamList, 'ChatDetails'>,
-  navigation: NativeStackNavigationProp<StackParamList, 'ChatDetails'>}) => {
+const DirectChatDetails = ({route, navigation}: {
+  route: RouteProp<StackParamList, 'ChannelDetails'>,
+  navigation: NativeStackNavigationProp<StackParamList, 'ChannelDetails'>
+}) => {
   const pubnub = usePubNub()
   const {state, dispatch} = useStore()
   const [loading, setLoading] = useState(false)
@@ -98,12 +100,20 @@ const MembersViewList = ({ channel }: { channel: Channel }) => {
   </View>)}</>
 }
 
-const GroupChatDetails = ({ route, navigation }: {
-  route: RouteProp<StackParamList, 'ChatDetails'>,
-  navigation: NativeStackNavigationProp<StackParamList, 'ChatDetails'>}) => {
+const GroupChatDetails = ({route, navigation}: {
+  route: RouteProp<StackParamList, 'ChannelDetails'>,
+  navigation: NativeStackNavigationProp<StackParamList, 'ChannelDetails'>
+}) => {
   const pubnub = usePubNub()
   const {state, dispatch} = useStore()
+  const channel = state.channels[route.params.item.id]
   const item = route.params.item
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: channel.name
+    })
+  }, [navigation, channel])
 
   const leaveChannel = async () => {
     console.log('leaving channel')
@@ -145,8 +155,8 @@ const GroupChatDetails = ({ route, navigation }: {
     console.log('remove channel from channel group', removeChannelRes)
     const channels = {...state.channels}
     delete channels[channel]
-    dispatch({ channels })
-    navigation.replace('Chats')
+    dispatch({channels})
+    navigation.replace('Channels')
   }
 
   const addMembers = () => {

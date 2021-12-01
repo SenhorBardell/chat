@@ -12,12 +12,12 @@
 3. Add member to group [x]
 4. Show group members [x]
 5. Remove member from group [x]
-6. Edit group details [ ]
+6. Edit group details [x]
 7. Leave group [x]
 
 ## Common
 
-1. Chat history
+1. Channel history
    1. Fetch history of chat [ ]
    2. Unread messages [ ]
    3. Last message on the chat list item
