@@ -1,8 +1,17 @@
-import React, {useRef} from 'react'
-import { View, TextInput, TouchableOpacity } from 'react-native'
+import React, {useRef, useState} from 'react'
+import {Text, TextInput, View} from 'react-native'
+import {Ionicons} from '@expo/vector-icons'
+
+const Placeholder = () => <View>
+  <Ionicons
+    name="camera"
+    size={45}/>
+  <Text>Search</Text>
+</View>
 
 export default ({value, onChange}) => {
-  const textRef = useRef()
+  const inputRef = useRef<TextInput>(null)
+  const [focused, setFocus] = useState(false)
   return <View style={{
     padding: 8,
     margin: 4,
@@ -10,15 +19,15 @@ export default ({value, onChange}) => {
     borderRadius: 4,
   }}>
     <TextInput
-      ref={textRef}
+      ref={inputRef}
       onChangeText={onChange}
       value={value}
-      placeholder="🔍 Search"
+      placeholder="Search"
+      placeholderTextColor="#ddd"
       style={{
         color: 'white',
         textAlign: 'center',
         fontSize: 16
-      }}
-    />
+      }}/>
   </View>
 }

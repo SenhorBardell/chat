@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, StyleSheet, FontVariant} from 'react-native'
+import {Image, StyleSheet, Text, View} from 'react-native'
 import {LinearGradient} from 'expo-linear-gradient'
 
 const styles = StyleSheet.create({
@@ -20,12 +20,14 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ({letter}: {letter: string}) => <View style={styles.container}>
-  <LinearGradient
-    colors={['#a5bef5', '#91a2c7']}
-    start={{x: 0.1, y: 0.2}}
-    style={styles.shape}
-  >
-    <Text style={styles.text}>{letter}</Text>
-  </LinearGradient>
+export default ({letter, source}: { letter: string, source?: string }) => <View style={styles.container}>
+  {source ?
+    <Image source={{uri: source}} style={styles.shape}/> :
+    <LinearGradient
+      colors={['#a5bef5', '#91a2c7']}
+      start={{x: 0.1, y: 0.2}}
+      style={styles.shape}
+    >
+      <Text style={styles.text}>{letter}</Text>
+    </LinearGradient>}
 </View>

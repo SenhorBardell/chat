@@ -12,7 +12,7 @@ export const ChannelListItem = (
 
   return <TouchableOpacity onPress={onPress} style={ListViewStyle.container}>
     <View style={{flexDirection: 'row'}}>
-      <Circle letter={letter}/>
+      <Circle letter={letter} source={item.custom.caption}/>
       <View style={[{flexDirection: 'column'}, index !== length - 1 ? ListViewStyle.separator : {}]}>
         <Text style={ListViewStyle.title}>{item.name}</Text>
         <Text style={ListViewStyle.subtitle} numberOfLines={2}>{lastMessage}</Text>

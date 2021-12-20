@@ -1,7 +1,8 @@
 import create from 'zustand'
-import {IMessage} from "react-native-gifted-chat";
+import {IMessage} from 'react-native-gifted-chat'
+import 'react-native-get-random-values'
 
-export const uuid = '0'
+export const uuid = '0' // uuidv4()
 
 export const user = {
   _id: uuid,
@@ -25,6 +26,7 @@ export type Channel = {
   name: string
   custom: {
     type: ChannelType
+    caption?: string
   }
 }
 
@@ -54,6 +56,6 @@ export const useStore = create<Store>(setState => ({
     ],
     user,
   },
-  dispatch: newState => 
+  dispatch: newState =>
     setState((oldState) => ({state: {...oldState.state, ...newState}}))
 }))

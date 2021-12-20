@@ -1,5 +1,5 @@
 import Pubnub from "pubnub";
-import {ChannelType} from "./store";
+import {Channel, ChannelType} from "./store";
 
 export default (state, dispatch) => ({
   message: payload => {
@@ -39,18 +39,19 @@ export default (state, dispatch) => ({
 })
 
 export const fetchChannels = async (pubnub: Pubnub, channelGroup) => {
-  const res = await pubnub.channelGroups.listChannels({ channelGroup })
+  const res = await pubnub.channelGroups.listChannels({channelGroup})
   console.log('fetched channel list', res)
-  const channels = res.channels.reduce((acc, channel) =>
-    ({[channel]: {name: '', custom: {type: ChannelType.Group}}, ...acc}), {})
+  const channels = res.channels.reduce<{ [id: string]: Channel }>((acc, channel) =>
+    ({[channel]: {id: '', name: '', custom: {type: ChannelType.Group}}, ...acc}), {})
+  if (!res.channels.length) return channels
   try {
     const metadata = await pubnub.objects.getAllChannelMetadata({
       filter: res.channels.map(channel => `id == "${channel}"`).join('||'),
       include: {customFields: true}
     })
     console.log('fetched metadata for channel list', metadata)
-    metadata.data.forEach(({ id, name, custom }) => {
-      channels[id] = { name, custom: {...channels[id]?.custom, ...custom} }
+    metadata.data.forEach(({id, name, custom}) => {
+      channels[id] = {id, name, custom: {...channels[id]?.custom, ...custom}}
     })
   } catch (error) {
     console.log('failed to fetch metadata', error)

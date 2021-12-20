@@ -31,7 +31,7 @@ export default ({navigation}: { navigation: NativeStackNavigationProp<StackParam
         <View style={NavigationStyle.headerRight}>
           <Button
             disabled={!selectedContacts.length}
-            onPress={() => navigation.navigate('CreateGroupDetails', {
+            onPress={() => navigation.navigate('CreateChannelDetails', {
               members: selectedContacts.map(_id => state.contacts.find(c => c._id === _id))
             })}
             title="Next" />

@@ -11,7 +11,7 @@ import {ChatMember} from './components/ListViewItem'
 
 export default ({navigation, route}: {
   navigation: NativeStackNavigationProp<StackParamList, 'CreateChannelDetails'>,
-  route: RouteProp<StackParamList, 'CreateGroupDetails'>
+  route: RouteProp<StackParamList, 'CreateChannelDetails'>
 }) => {
   const pubnub = usePubNub()
   const {state, dispatch} = useStore()
@@ -45,7 +45,12 @@ export default ({navigation, route}: {
         [channel]: {id: channel, name, custom: {type: ChannelType.Group}}}
     })
     setLoading(false)
-    navigation.reset({index: 0, routes: [{name: 'Chats'}, {name: 'Chat', params: {item: {id: channel, name, custom: {type: ChannelType.Group}}}}]})
+    navigation.reset({index: 0,
+      routes: [{name: 'Channels'}, {
+        name: 'Channel',
+        params: {item: {id: channel, name, custom: {type: ChannelType.Group}}}
+      }]
+    })
   }
 
   useLayoutEffect(() => {
